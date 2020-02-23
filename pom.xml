@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.6.RELEASE</version>
+        <version>2.2.4.RELEASE</version>
     </parent>
 
     <dependencies>
@@ -22,7 +22,6 @@
 
     <properties>
         <java.version>11</java.version>
-        <docker.image.prefix>k0diak</docker.image.prefix>
     </properties>
     
     <build>
@@ -30,50 +29,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>0.31.0</version>
-                <configuration>
-                    <images>
-                        <image>
-                            <alias>${project.artifactId}</alias>
-                            <name>${docker.image.prefix}/${project.artifactId}:${project.version}</name>
-                            <build>
-                                <from>amazoncorretto:11</from>
-                                <assembly>
-                                    <targetDir>/</targetDir>
-                                    <inline>
-                                        <files>
-                                            <file>
-                                                <source>${project.build.directory}/${build.finalName}.${project.packaging}</source>
-                                                <outputDirectory>.</outputDirectory>
-                                                <destName>${build.finalName}.${project.packaging}</destName>
-                                            </file>
-                                        </files>
-                                    </inline>
-                                </assembly>
-                                <entryPoint>
-                                    <exec>
-                                        <arg>java</arg>
-                                        <arg>-jar</arg>
-                                        <arg>${build.finalName}.${project.packaging}</arg>
-                                    </exec>
-                                </entryPoint>
-                            </build>
-                        </image>
-                    </images>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>build</goal>
-                            <goal>push</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
