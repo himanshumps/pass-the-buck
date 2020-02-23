@@ -1,6 +1,8 @@
 package example;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,6 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 public class PassController {
+
+    private RestTemplate restTemplate;
+
+    @Autowired
+    public PassController(RestTemplateBuilder builder) {
+        this.restTemplate = builder.build();
+    }
 
     @Value("${upstream}")
     private String upstream;
@@ -22,7 +31,6 @@ public class PassController {
     }
 
     private ResponseEntity<String> requestUpstream(String path) {
-        RestTemplate restTemplate = new RestTemplate();
         String resourceUrl = upstream + path;
         return restTemplate.getForEntity(resourceUrl, String.class);
     }
