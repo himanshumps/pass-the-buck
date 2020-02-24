@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 public class PassController {
 
-    @Bean
+    /*@Bean
     ConnectionKeepAliveStrategy connectionKeepAliveStrategy() {
         return (response, context) -> {
             BasicHeaderElementIterator it = new BasicHeaderElementIterator(
@@ -73,7 +73,7 @@ public class PassController {
         this.restTemplate = new RestTemplate();
         this.restTemplate.setRequestFactory(createRequestFactory());
     }
-
+*/
     @Value("${upstream}")
     private String upstream;
 
@@ -90,6 +90,7 @@ public class PassController {
     }
 
     private ResponseEntity<String> requestUpstream(String path) {
+        RestTemplate restTemplate = new RestTemplate();
         String resourceUrl = upstream + path;
         return restTemplate.getForEntity(resourceUrl, String.class);
     }
