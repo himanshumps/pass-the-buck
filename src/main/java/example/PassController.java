@@ -1,6 +1,8 @@
 package example;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,14 +63,17 @@ public class PassController {
     }
 */
     WebClient webClient;
-    @Value("${upstream}")
-    private String upstream;
+
+    @Autowired
+    private Environment env;
+
+
 
     public PassController() {
-        System.out.println("Upstream: " + upstream);
+        System.out.println("Upstream: " + env.getProperty("UPSTREAM"));
         WebClient.Builder webClientBuilderInstance = WebClient
                 .builder()
-                .baseUrl(upstream);
+                .baseUrl(env.getProperty("UPSTREAM"));
         webClient = webClientBuilderInstance.build();
     }
 
