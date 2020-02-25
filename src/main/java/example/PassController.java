@@ -19,6 +19,9 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import reactor.core.publisher.Mono;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -74,25 +77,27 @@ public class PassController {
         this.restTemplate.setRequestFactory(createRequestFactory());
     }
 */
+    WebClient webClient;
     @Value("${upstream}")
     private String upstream;
 
+    public PassController(){
+        WebClient.Builder webClientBuilderInstance = WebClient
+                .builder()
+                .baseUrl(upstream);
+        webClient = webClientBuilderInstance.build();
+    }
+
     @RequestMapping("/healthz")
-    public String healthz(HttpServletRequest request) {
-        return "{\"app\": \"Go-gitter\"}";
+    public Mono<String> healthz(ServerRequest request) {
+        return Mono.just("{\"app\": \"Go-gitter\"}");
     }
 
     @RequestMapping("/**")
-    public String pass(HttpServletRequest request) {
-        String path = request.getServletPath();
-        ResponseEntity<String> response = requestUpstream(path);
-        return response.getBody();
+    public Mono<String> pass(ServerRequest request) {
+        String path = request.path();
+        return webClient.get().uri(path).retrieve().bodyToMono(String.class);
     }
 
-    private ResponseEntity<String> requestUpstream(String path) {
-        RestTemplate restTemplate = new RestTemplate();
-        String resourceUrl = upstream + path;
-        return restTemplate.getForEntity(resourceUrl, String.class);
-    }
 
 }
