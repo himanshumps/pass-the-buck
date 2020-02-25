@@ -1,10 +1,11 @@
 package example;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.server.ServerRequest;
+
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -71,13 +72,13 @@ public class PassController {
     }
 
     @RequestMapping("/healthz")
-    public Mono<String> healthz(ServerRequest request) {
+    public Mono<String> healthz(ServerHttpRequest request) {
         return Mono.just("{\"app\": \"Go-gitter\"}");
     }
 
     @RequestMapping("/**")
-    public Mono<String> pass(ServerRequest request) {
-        String path = request.path();
+    public Mono<String> pass(ServerHttpRequest request) {
+        String path = request.getPath().toString();
         return webClient.get().uri(path).retrieve().bodyToMono(String.class);
     }
 
