@@ -65,6 +65,7 @@ public class PassController {
     private String upstream;
 
     public PassController() {
+        System.out.println("Upstream: " + upstream);
         WebClient.Builder webClientBuilderInstance = WebClient
                 .builder()
                 .baseUrl(upstream);
