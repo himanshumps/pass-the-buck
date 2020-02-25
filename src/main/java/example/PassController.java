@@ -10,6 +10,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import reactor.core.publisher.Mono;
 
+import javax.annotation.PostConstruct;
+
 @RestController
 public class PassController {
 
@@ -68,8 +70,8 @@ public class PassController {
     private Environment env;
 
 
-
-    public PassController() {
+    @PostConstruct
+    public void initMethod() throws Exception {
         System.out.println("Upstream: " + env.getProperty("UPSTREAM"));
         WebClient.Builder webClientBuilderInstance = WebClient
                 .builder()
